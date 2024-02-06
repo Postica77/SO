@@ -1,0 +1,165 @@
+//Menu.java
+import java.util.Scanner;
+public class Menu {
+    private static MinHeap minHeap = new MinHeap();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public Menu() {
+        while (true) {
+            System.out.println("------ Heap Menu ------");
+            System.out.println("1. Push");
+            System.out.println("2. Pop");
+            System.out.println("3. Peek");
+            System.out.println("4. Display Heap");
+            System.out.println("5. Find min cost");
+            System.out.println("6. Exit");
+
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter the value to push: ");
+                    int valueToPush = scanner.nextInt();
+                    minHeap.push(valueToPush);
+                    System.out.println(valueToPush + " pushed into the heap.");
+                    break;
+
+                case 2:
+                    Integer poppedValue = minHeap.pop();
+                    if (poppedValue != null) {
+                        System.out.println("Popped value: " + poppedValue);
+                    } else {
+                        System.out.println("Heap is empty. Cannot pop.");
+                    }
+                    break;
+
+                case 3:
+                    Integer peekedValue = minHeap.peek();
+                    if (peekedValue != null) {
+                        System.out.println("Peeked value: " + peekedValue);
+                    } else {
+                        System.out.println("Heap is empty. Cannot peek.");
+                    }
+                    break;
+
+                case 4:
+                    Integer[] heapArray = minHeap.getHeap().toArray(new Integer[0]);
+
+                    System.out.print("Current Heap: ");
+                    for (Integer value : heapArray) {
+                        System.out.print(value + " ");
+                    }
+                    System.out.print("\n");
+                    break;
+
+                case 5:
+                    int minCost = minHeap.findMinCost();
+                    System.out.println("Min cost: " + minCost);
+                    break;
+
+                case 6:
+                    System.out.println("Exiting the program. Bye!");
+                    System.exit(0);
+                    break;
+
+
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        }
+    }
+}
+
+
+//MinHeap.java
+import java.util.ArrayList;
+import java.util.List;
+
+public class MinHeap {
+    private List<Integer> heap;
+
+    public MinHeap() {
+        this.heap = new ArrayList<>();
+    }
+
+    public Integer pop() {
+        if (heap.isEmpty()) {
+            return null;
+        }
+
+        if (heap.size() == 1) {
+            return heap.remove(0);
+        }
+
+        int root = heap.get(0);
+        heap.set(0, heap.remove(heap.size() - 1));
+        heapifyDown(0);
+        return root;
+    }
+
+    public Integer peek() {
+        return heap.isEmpty() ? null : heap.get(0);
+    }
+
+    public void push(int value) {
+        heap.add(value);
+        heapifyUp(heap.size() - 1);
+    }
+
+    private void swap(int i, int j) {
+        int temp = heap.get(i);
+        heap.set(i, heap.get(j));
+        heap.set(j, temp);
+    }
+
+    public List<Integer> getHeap() {
+        return heap;
+    }
+
+    private void heapifyUp(int index) {
+        int parentIndex = (index - 1) / 2;
+        while (index > 0 && heap.get(index) < heap.get(parentIndex)) {
+            swap(index, parentIndex);
+            index = parentIndex;
+            parentIndex = (index - 1) / 2;
+        }
+    }
+
+    private void heapifyDown(int index) {
+        int leftChildIndex = 2 * index + 1;
+        int rightChildIndex = 2 * index + 2;
+        int smallest = index;
+
+        if (leftChildIndex < heap.size() && heap.get(leftChildIndex) < heap.get(smallest)) {
+            smallest = leftChildIndex;
+        }
+
+        if (rightChildIndex < heap.size() && heap.get(rightChildIndex) < heap.get(smallest)) {
+            smallest = rightChildIndex;
+        }
+
+        if (smallest != index) {
+            swap(index, smallest);
+            heapifyDown(smallest);
+        }
+    }
+
+    public int findMinCost() {
+        int totalCost = 0;
+
+        while (!heap.isEmpty()) {
+            int firstLength = pop();
+            int secondLength = pop();
+
+            int combinedLength = firstLength + secondLength;
+            totalCost += combinedLength;
+
+            if (!heap.isEmpty()) {
+                push(combinedLength);
+            }
+        }
+
+        return totalCost;
+    }
+}
