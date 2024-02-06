@@ -1,0 +1,42 @@
+public class PartyCelebrity {
+    
+    static int[][] knowledgeMatrix = {
+        {0, 1, 1, 0},
+        {0, 0, 1, 0},
+        {0, 0, 0, 0},
+        {0, 0, 1, 0}
+    };
+    
+    static boolean knows(int a, int b) {
+        return knowledgeMatrix[a][b] == 1;
+    }
+    
+    static int findCelebrity(int n) {
+        int celebrityCandidate = 0;
+        
+        for (int i = 1; i < n; i++) {
+            if (knows(celebrityCandidate, i)) {
+                celebrityCandidate = i;
+            }
+        }
+        
+        for (int i = 0; i < n; i++) {
+            if (i != celebrityCandidate && (knows(celebrityCandidate, i) || !knows(i, celebrityCandidate))) {
+                return -1; 
+            }
+        }
+        
+        return celebrityCandidate; 
+    }
+    
+    public static void main(String[] args) {
+        int n = 4; 
+        int celebrity = findCelebrity(n);
+        
+        if (celebrity == -1) {
+            System.out.println("There is no celebrity in the party.");
+        } else {
+            System.out.println("Celebrity este persoana cu indexul " + celebrity);
+        }
+    }
+}
