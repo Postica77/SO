@@ -1,0 +1,56 @@
+private void heapifyUp(int index) {     int parentIndex = (index - 1) / 2; 
+    while (index > 0 && heap.get(index) < heap.get(parentIndex)) {         swap(index, parentIndex);         index = parentIndex; 
+        parentIndex = (index - 1) / 2; 
+    } 
+}  private void heapifyDown(int index) {     int leftChildIndex = 2 * index + 1;     int rightChildIndex = 2 * index + 2;     int smallest = index; 
+ 
+    if (leftChildIndex < heap.size() && heap.get(leftChildIndex) < heap.get(smallest)) { 
+        smallest = leftChildIndex; 
+    }  
+    if (rightChildIndex < heap.size() && heap.get(rightChildIndex) < heap.get(smallest)) { 
+        smallest = rightChildIndex; 
+    }      if (smallest != index) {         swap(index, smallest);         heapifyDown(smallest); 
+    } 
+}  public int findMinCost() {     int totalCost = 0; 
+ 
+    while (!heap.isEmpty()) { 
+
+        int firstLength = pop();         int secondLength = pop(); 
+ 
+        int combinedLength = firstLength + secondLength;         totalCost += combinedLength; 
+         if (!heap.isEmpty()) {             push(combinedLength); 
+        } 
+    }  
+    return totalCost; 
+} 
+                 case 2: 
+                    Integer poppedValue = minHeap.pop();                     if (poppedValue != null) { 
+                        System.out.println("Popped value: " + poppedValue); 
+                    } else { 
+                        System.out.println("Heap is empty. Cannot pop."); 
+                    }                     break; 
+                 case 3: 
+                    Integer peekedValue = minHeap.peek();                     if (peekedValue != null) { 
+                        System.out.println("Peeked value: " + peekedValue);                     } else { 
+                        System.out.println("Heap is empty. Cannot peek."); 
+                    }                     break; 
+                 case 4: 
+                    Integer[] heapArray = minHeap.getHeap().toArray(new 
+Integer[0]); 
+ 
+                    System.out.print("Current Heap: ");                     for (Integer value : heapArray) { 
+                        System.out.print(value + " "); 
+                    } 
+                    System.out.print("\n");                     break; 
+                 case 5: 
+                    int minCost = minHeap.findMinCost();                     System.out.println("Min cost: " + minCost);                     break;  
+                case 6: 
+                    System.out.println("Exiting the program. Bye!");                     System.exit(0);                     break; 
+ 
+                default: 
+                    System.out.println("Invalid choice. Please enter a valid option."); 
+            } 
+        } 
+    } 
+} 
+ 
