@@ -1,0 +1,199 @@
+//LAB-1
+//BaseService.java
+package lab1;
+
+public class BaseService {
+    private double value;
+    private String convertTo;
+    private String convertFrom;
+    private double USDEURRate = 0.85;
+    private double USDJPYRate = 109.34;
+    private double EURJPYRate = 157.9;
+    private double EURUSDRate = 1.18;
+    private double JPYUSDRate = 0.009;
+    private double JPYEURRate = 0.006;
+
+
+    public BaseService(double _value, String _convertTo, String _convertFrom) {
+        value = _value;
+        convertTo = _convertTo;
+        convertFrom = _convertFrom;
+    }
+
+    private double getRate() {
+        String rateCase = convertFrom + convertTo;
+        switch (rateCase) {
+            case "USDEUR":
+                return USDEURRate;
+            case "USDJPY":
+                return USDJPYRate;
+            case "EURJPY":
+                return EURJPYRate;
+            case "EURUSD":
+                return EURUSDRate;
+            case "JPYUSD":
+                return JPYUSDRate;
+            case "JPYEUR":
+                return JPYEURRate;
+            default:
+                return 1;
+        }
+    }
+
+    public double getOutput() {
+        return value * getRate();
+    }
+}
+
+
+
+
+//EURConverter.java
+package lab1;
+
+import lab1.BaseService;
+
+public class EURConverter extends BaseService {
+    private String baseCurrency = "EUR";
+    private double value = 0 ;
+
+    public EURConverter(double _value, String _convertTo){
+        super(_value, _convertTo, "EUR");
+        value = _value;
+    }
+
+    public double convert(){
+        return this.getOutput();
+    }
+}
+
+
+
+
+//JPYConverter.java
+package lab1;
+
+import lab1.BaseService;
+
+public class JPYConverter extends BaseService {
+    private String baseCurrency = "JPY";
+    private double value = 0 ;
+
+    public JPYConverter(double _value, String _convertTo){
+        super(_value, _convertTo, "JPY");
+        value = _value;
+    }
+
+    public double convert(){
+        return this.getOutput();
+    }
+}
+
+
+//UI.java
+package lab1;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class UI {
+        private JFrame frame;
+        private JTextField amountField;
+        private JComboBox<String> fromCurrencyComboBox;
+        private JComboBox<String> toCurrencyComboBox;
+        private JLabel resultLabel;
+
+        public UI() {
+            frame = new JFrame("Currency Converter");
+            frame.setLayout(new GridLayout(5, 2));
+
+            JLabel amountLabel = new JLabel("Amount:");
+            amountField = new JTextField();
+
+            JLabel fromCurrencyLabel = new JLabel("From Currency:");
+            fromCurrencyComboBox = new JComboBox<>(new String[]{"USD", "EUR", "JPY"});
+
+            JLabel toCurrencyLabel = new JLabel("To Currency:");
+            toCurrencyComboBox = new JComboBox<>(new String[]{"USD", "EUR", "JPY"});
+
+            JButton convertButton = new JButton("Convert");
+            resultLabel = new JLabel("");
+
+            frame.add(amountLabel);
+            frame.add(amountField);
+            frame.add(fromCurrencyLabel);
+            frame.add(fromCurrencyComboBox);
+            frame.add(toCurrencyLabel);
+            frame.add(toCurrencyComboBox);
+            frame.add(convertButton);
+            frame.add(resultLabel);
+
+            frame.setSize(300, 150);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+
+            convertButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String fromCurrency = fromCurrencyComboBox.getSelectedItem().toString();
+                    String toCurrency = toCurrencyComboBox.getSelectedItem().toString();
+                    double value =  Double.parseDouble(amountField.getText());
+                    switch (fromCurrency) {
+                        case "USD":
+                            USDConverter converter = new USDConverter(value, toCurrency);
+                            String result = value + " USD = " + converter.convert() + toCurrency;
+                            System.out.println(result);
+                            resultLabel.setText(result);
+                            break;
+                       case "EUR":
+                           EURConverter eurconverter = new EURConverter(value, toCurrency);
+                           String eurresult = value + " EUR = " + eurconverter.convert() + toCurrency;
+                           System.out.println(eurresult);
+                           resultLabel.setText(eurresult);
+                           break;
+                        case "JPY":
+                            JPYConverter jpyconverter = new JPYConverter(value, toCurrency);
+                            String jpyresult = value + " JPY = " + jpyconverter.convert() + toCurrency;
+                            System.out.println(jpyresult);
+                            resultLabel.setText(jpyresult);
+                            break;
+                        default: resultLabel.setText("Something went wrong!");
+                    }
+                }
+            });
+        }
+
+
+
+        public static void main(String[] args) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new UI();
+                }
+            });
+        }
+    }
+
+
+
+//USDConverter.java
+package lab1;
+
+import lab1.BaseService;
+
+public class USDConverter extends BaseService {
+    private String baseCurrency = "USD";
+    private double value = 0 ;
+
+    public USDConverter(double _value, String _convertTo){
+        super(_value, _convertTo, "USD");
+        value = _value;
+    }
+
+    public double convert(){
+        return this.getOutput();
+    }
+}
